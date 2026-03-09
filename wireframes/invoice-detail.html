@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice Detail</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 16px; color: #222; }
+    .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .header-row h1 { font-size: 18px; margin: 0 0 4px; }
+    .breadcrumb { font-size: 12px; color: #888; }
+    .breadcrumb a { color: #0066cc; text-decoration: none; }
+    .status-badge { padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+    .status-draft { background: #f3f4f6; color: #374151; }
+    .status-sent { background: #dbeafe; color: #1d4ed8; }
+    .status-paid { background: #dcfce7; color: #166534; }
+    .status-overdue { background: #fee2e2; color: #991b1b; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; background: #f9f9f9; border: 1px solid #eee; border-radius: 4px; padding: 12px 16px; margin-bottom: 20px; }
+    .meta-item label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #888; display: block; margin-bottom: 2px; }
+    .meta-item span { font-size: 13px; color: #222; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+    th { text-align: left; padding: 8px; background: #f4f4f4; border-bottom: 2px solid #ddd; font-weight: 600; }
+    td { padding: 8px; border-bottom: 1px solid #eee; }
+    td.right, th.right { text-align: right; }
+    .totals { max-width: 280px; margin-left: auto; font-size: 13px; }
+    .totals .row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+    .totals .row.grand { font-weight: 700; font-size: 15px; border-top: 2px solid #ddd; border-bottom: none; padding-top: 8px; margin-top: 4px; }
+    .section-title { font-size: 13px; font-weight: 700; margin: 20px 0 8px; color: #555; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+    .notes-box { background: #fafafa; border: 1px solid #eee; border-radius: 4px; padding: 10px 12px; font-size: 13px; color: #555; min-height: 48px; }
+    .actions { display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+    button { padding: 7px 16px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    button.primary { background: #0066cc; color: #fff; border: none; }
+    button.primary:hover { background: #0055bb; }
+    button.secondary { background: #fff; color: #333; border: 1px solid #ccc; }
+    button.secondary:hover { background: #f4f4f4; }
+    button.danger { background: #fff; color: #991b1b; border: 1px solid #fca5a5; }
+    button.danger:hover { background: #fee2e2; }
+    a { color: #0066cc; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<div class="header-row">
+  <div>
+    <h1>Invoice #INV-2026-0042</h1>
+    <div class="breadcrumb"><a href="#wireframe:customer-list">← Customers</a> / <a href="#wireframe:new-order">New Order</a></div>
+  </div>
+  <span class="status-badge status-sent">Sent</span>
+</div>
+
+<div class="meta-grid">
+  <div class="meta-item">
+    <label>Customer</label>
+    <span>Alice Hartmann</span>
+  </div>
+  <div class="meta-item">
+    <label>Invoice Date</label>
+    <span>2026-03-09</span>
+  </div>
+  <div class="meta-item">
+    <label>Due Date</label>
+    <span>2026-03-23</span>
+  </div>
+  <div class="meta-item">
+    <label>Service Address</label>
+    <span>12 Maple St, Unit 3</span>
+  </div>
+  <div class="meta-item">
+    <label>Order Reference</label>
+    <span>ORD-2026-0088</span>
+  </div>
+  <div class="meta-item">
+    <label>Priority</label>
+    <span>Normal</span>
+  </div>
+</div>
+
+<div class="section-title">Line Items</div>
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th class="right" style="width:80px">Qty</th>
+      <th class="right" style="width:110px">Unit Price</th>
+      <th class="right" style="width:110px">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HVAC Inspection &amp; Service</td>
+      <td class="right">1</td>
+      <td class="right">$120.00</td>
+      <td class="right">$120.00</td>
+    </tr>
+    <tr>
+      <td>Air Filter Replacement (HEPA 16×25×1)</td>
+      <td class="right">2</td>
+      <td class="right">$28.50</td>
+      <td class="right">$57.00</td>
+    </tr>
+    <tr>
+      <td>Refrigerant Top-Up (R-410A)</td>
+      <td class="right">1</td>
+      <td class="right">$45.00</td>
+      <td class="right">$45.00</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="totals">
+  <div class="row"><span>Subtotal</span><span>$222.00</span></div>
+  <div class="row"><span>Tax (8%)</span><span>$17.76</span></div>
+  <div class="row grand"><span>Total Due</span><span>$239.76</span></div>
+</div>
+
+<div class="section-title">Notes</div>
+<div class="notes-box">Filter was heavily clogged. Recommend quarterly service schedule going forward.</div>
+
+<div class="actions">
+  <button class="primary">Mark as Paid</button>
+  <button class="secondary">Send Reminder</button>
+  <button class="secondary">Download PDF</button>
+  <button class="secondary">Edit Order</button>
+  <button class="danger" style="margin-left:auto">Void Invoice</button>
+</div>
+
+</body>
+</html>

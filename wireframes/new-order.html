@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Service Order</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 16px; color: #222; }
+    h1 { font-size: 18px; margin-bottom: 4px; }
+    .breadcrumb { font-size: 12px; color: #888; margin-bottom: 16px; }
+    .breadcrumb a { color: #0066cc; text-decoration: none; }
+    .form-section { margin-bottom: 20px; }
+    .form-section h2 { font-size: 14px; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 6px; margin-bottom: 12px; color: #555; }
+    .form-row { display: flex; gap: 12px; margin-bottom: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    label { font-size: 12px; font-weight: 600; color: #444; }
+    input, select, textarea { padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+    textarea { resize: vertical; min-height: 60px; }
+    .item-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }
+    .item-table th { text-align: left; padding: 6px 8px; background: #f4f4f4; border-bottom: 2px solid #ddd; font-weight: 600; }
+    .item-table td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+    .item-table input { width: 100%; }
+    .add-item-btn { font-size: 12px; color: #0066cc; background: none; border: none; cursor: pointer; padding: 0; }
+    .add-item-btn:hover { text-decoration: underline; }
+    .totals { text-align: right; font-size: 13px; margin-top: 8px; }
+    .totals .total-line { display: flex; justify-content: flex-end; gap: 32px; padding: 3px 0; }
+    .totals .grand-total { font-weight: 700; border-top: 2px solid #ddd; padding-top: 6px; margin-top: 4px; }
+    .actions { display: flex; gap: 10px; margin-top: 24px; }
+    button.primary { padding: 8px 20px; background: #0066cc; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    button.primary:hover { background: #0055bb; }
+    button.secondary { padding: 8px 20px; background: #fff; color: #333; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    button.secondary:hover { background: #f4f4f4; }
+    a { color: #0066cc; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<h1>New Service Order</h1>
+<div class="breadcrumb"><a href="#wireframe:customer-list">← Customers</a></div>
+
+<div class="form-section">
+  <h2>Customer</h2>
+  <div class="form-row">
+    <div class="form-group" style="flex:2">
+      <label>Customer</label>
+      <select>
+        <option value="">— Select customer —</option>
+        <option>Alice Hartmann</option>
+        <option>Bob Nguyen</option>
+        <option>Carol Jensen</option>
+        <option>David Park</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Order Date</label>
+      <input type="date" value="2026-03-09">
+    </div>
+    <div class="form-group">
+      <label>Priority</label>
+      <select>
+        <option>Normal</option>
+        <option>High</option>
+        <option>Urgent</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h2>Service Location</h2>
+  <div class="form-row">
+    <div class="form-group" style="flex:3">
+      <label>Address</label>
+      <input type="text" placeholder="Street address">
+    </div>
+    <div class="form-group">
+      <label>Unit / Floor</label>
+      <input type="text" placeholder="Apt, suite, etc.">
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h2>Work Items</h2>
+  <table class="item-table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th style="width:100px">Qty</th>
+        <th style="width:120px">Unit Price</th>
+        <th style="width:120px">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" placeholder="Service or part description"></td>
+        <td><input type="number" value="1" min="1"></td>
+        <td><input type="text" placeholder="0.00"></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><input type="text" placeholder="Service or part description"></td>
+        <td><input type="number" value="1" min="1"></td>
+        <td><input type="text" placeholder="0.00"></td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="add-item-btn">+ Add line item</button>
+  <div class="totals">
+    <div class="total-line"><span>Subtotal</span><span>—</span></div>
+    <div class="total-line"><span>Tax (8%)</span><span>—</span></div>
+    <div class="total-line grand-total"><span>Total</span><span>—</span></div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h2>Notes</h2>
+  <textarea placeholder="Internal notes or special instructions…"></textarea>
+</div>
+
+<div class="actions">
+  <button class="primary">Create Order</button>
+  <button class="secondary">Save Draft</button>
+  <button class="secondary" onclick="history.back()">Cancel</button>
+</div>
+
+</body>
+</html>

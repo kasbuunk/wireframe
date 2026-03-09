@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe Viewer</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      background: #f0f0f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      background: #2c2c2c;
+      color: #fff;
+      padding: 0 16px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    header h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.02em; }
+
+    #toggle-intent {
+      background: #444;
+      color: #ccc;
+      border: 1px solid #555;
+      padding: 4px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    #toggle-intent:hover { background: #555; color: #fff; }
+    #toggle-intent.active { background: #0066cc; border-color: #0055bb; color: #fff; }
+
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      width: 220px;
+      background: #e8e8e8;
+      border-right: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    #sidebar-header {
+      padding: 10px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #666;
+      border-bottom: 1px solid #ccc;
+      flex-shrink: 0;
+    }
+
+    #wireframe-list {
+      list-style: none;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    #wireframe-list li a {
+      display: block;
+      padding: 9px 12px;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #wireframe-list li a:hover { background: #ddd; }
+    #wireframe-list li a.active { background: #fff; color: #0066cc; font-weight: 600; border-left: 3px solid #0066cc; }
+
+    #wireframe-list li a .wf-id {
+      font-size: 13px;
+      display: block;
+    }
+
+    #wireframe-list li a .wf-title {
+      font-size: 11px;
+      color: #888;
+      display: block;
+      margin-top: 1px;
+    }
+
+    #wireframe-list li a.active .wf-title { color: #66aaee; }
+
+    /* Main area */
+    #main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    #iframe-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #wireframe-title-bar {
+      padding: 8px 16px;
+      font-size: 13px;
+      color: #555;
+      background: #f9f9f9;
+      border-bottom: 1px solid #ddd;
+      flex-shrink: 0;
+    }
+
+    #wireframe-title-bar span { font-weight: 600; color: #333; }
+
+    #wireframe-frame {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+
+    #empty-state {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 15px;
+    }
+
+    /* Intent panel */
+    #intent-panel {
+      width: 300px;
+      background: #fafafa;
+      border-left: 1px solid #ddd;
+      overflow-y: auto;
+      display: none;
+      flex-shrink: 0;
+    }
+
+    #intent-panel.visible { display: block; }
+
+    #intent-panel-inner { padding: 16px; }
+
+    #intent-panel h2 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    #intent-panel .intent-description {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    #intent-panel h3 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .intent-element {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+
+    .intent-element .el-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .intent-element .el-type {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .el-type.action { background: #dbeafe; color: #1d4ed8; }
+    .el-type.information { background: #dcfce7; color: #166534; }
+    .el-type.navigation { background: #fef9c3; color: #854d0e; }
+
+    .intent-element .el-intent {
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .intent-element .el-nav {
+      font-size: 11px;
+      color: #0066cc;
+      margin-top: 3px;
+    }
+
+    #sse-status {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 11px;
+      color: #aaa;
+      background: rgba(0,0,0,0.05);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+
+    #sse-status.connected { color: #22c55e; }
+    #sse-status.disconnected { color: #f87171; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Wireframe Viewer</h1>
+  <button id="toggle-intent">Intent</button>
+</header>
+
+<div class="layout">
+  <nav id="sidebar">
+    <div id="sidebar-header">Wireframes</div>
+    <ul id="wireframe-list"></ul>
+  </nav>
+
+  <div id="main">
+    <div id="iframe-container" style="display:none">
+      <div id="wireframe-title-bar">Viewing: <span id="current-title"></span></div>
+      <iframe id="wireframe-frame" sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
+    <div id="empty-state">Select a wireframe to view it</div>
+  </div>
+
+  <aside id="intent-panel">
+    <div id="intent-panel-inner">
+      <p style="color:#aaa;font-size:12px">Select a wireframe to see intent metadata.</p>
+    </div>
+  </aside>
+</div>
+
+<div id="sse-status">●</div>
+
+<script>
+  let currentId = null;
+  let intentPanelVisible = false;
+
+  const list = document.getElementById('wireframe-list');
+  const frame = document.getElementById('wireframe-frame');
+  const iframeContainer = document.getElementById('iframe-container');
+  const emptyState = document.getElementById('empty-state');
+  const currentTitle = document.getElementById('current-title');
+  const intentPanel = document.getElementById('intent-panel');
+  const intentPanelInner = document.getElementById('intent-panel-inner');
+  const toggleIntentBtn = document.getElementById('toggle-intent');
+  const sseStatus = document.getElementById('sse-status');
+
+  // Toggle intent panel
+  toggleIntentBtn.addEventListener('click', () => {
+    intentPanelVisible = !intentPanelVisible;
+    intentPanel.classList.toggle('visible', intentPanelVisible);
+    toggleIntentBtn.classList.toggle('active', intentPanelVisible);
+    if (intentPanelVisible && currentId) loadIntent(currentId);
+  });
+
+  // Load wireframe list
+  async function loadList() {
+    const res = await fetch('/api/wireframes');
+    const wireframes = await res.json();
+    list.innerHTML = '';
+    wireframes.forEach(wf => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${wf.id}`;
+      a.dataset.id = wf.id;
+      a.innerHTML = `<span class="wf-id">${wf.id}</span><span class="wf-title">${wf.title}</span>`;
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+    updateActiveLink();
+  }
+
+  function updateActiveLink() {
+    document.querySelectorAll('#wireframe-list a').forEach(a => {
+      a.classList.toggle('active', a.dataset.id === currentId);
+    });
+  }
+
+  // Load a wireframe
+  function loadWireframe(id) {
+    currentId = id;
+    updateActiveLink();
+
+    // Find title from list
+    const link = document.querySelector(`#wireframe-list a[data-id="${id}"]`);
+    const title = link ? link.querySelector('.wf-title').textContent : id;
+    currentTitle.textContent = `${id} — ${title}`;
+
+    frame.src = `/api/wireframes/${id}/html`;
+    iframeContainer.style.display = 'flex';
+    emptyState.style.display = 'none';
+
+    if (intentPanelVisible) loadIntent(id);
+  }
+
+  // Load intent metadata
+  async function loadIntent(id) {
+    try {
+      const res = await fetch(`/api/wireframes/${id}`);
+      if (!res.ok) { intentPanelInner.innerHTML = '<p style="color:#aaa;font-size:12px">No intent data found.</p>'; return; }
+      const data = await res.json();
+      renderIntent(data);
+    } catch {
+      intentPanelInner.innerHTML = '<p style="color:#f87171;font-size:12px">Failed to load intent.</p>';
+    }
+  }
+
+  function renderIntent(data) {
+    let html = `<h2>${data.title || data.id}</h2>`;
+    if (data.description) html += `<p class="intent-description">${data.description}</p>`;
+
+    if (data.elements && data.elements.length) {
+      html += '<h3>Elements</h3>';
+      data.elements.forEach(el => {
+        const typeClass = el.type || 'information';
+        html += `<div class="intent-element">
+          <div><span class="el-name">${el.element}</span><span class="el-type ${typeClass}">${el.type || ''}</span></div>
+          <div class="el-intent">${el.intent}</div>
+          ${el.navigates_to ? `<div class="el-nav">→ ${el.navigates_to}</div>` : ''}
+        </div>`;
+      });
+    }
+
+    intentPanelInner.innerHTML = html;
+  }
+
+  // Hash-based navigation
+  function handleHash() {
+    const hash = location.hash.replace('#', '');
+    if (hash && hash !== currentId) {
+      loadWireframe(hash);
+    }
+  }
+
+  window.addEventListener('hashchange', handleHash);
+
+  // Intercept #wireframe: links inside the iframe
+  frame.addEventListener('load', () => {
+    try {
+      const iframeDoc = frame.contentDocument || frame.contentWindow.document;
+      iframeDoc.addEventListener('click', e => {
+        const a = e.target.closest('a[href]');
+        if (!a) return;
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('#wireframe:')) {
+          e.preventDefault();
+          const targetId = href.replace('#wireframe:', '');
+          location.hash = targetId;
+        }
+      });
+    } catch (err) {
+      // cross-origin — can't intercept
+    }
+  });
+
+  // SSE for auto-refresh
+  function connectSSE() {
+    const es = new EventSource('/api/events');
+
+    es.addEventListener('change', () => {
+      loadList();
+      if (currentId) {
+        frame.src = `/api/wireframes/${currentId}/html`;
+        if (intentPanelVisible) loadIntent(currentId);
+      }
+    });
+
+    es.onopen = () => { sseStatus.textContent = '● live'; sseStatus.className = 'connected'; };
+    es.onerror = () => {
+      sseStatus.textContent = '● disconnected'; sseStatus.className = 'disconnected';
+      es.close();
+      setTimeout(connectSSE, 3000);
+    };
+  }
+
+  // Init
+  loadList().then(() => {
+    if (location.hash) handleHash();
+  });
+  connectSSE();
+</script>
+
+</body>
+</html>
