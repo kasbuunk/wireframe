@@ -9,11 +9,16 @@ npm install   # install dependencies (express, chokidar)
 npm start     # start the viewer at http://localhost:3000
 ```
 
-To use a different port or wireframes directory:
-```bash
-PORT=3999 npm start
-WIREFRAMES_DIR=/path/to/other/wireframes npm start
+## Configuration
+
+The server auto-loads `.env` from the repo root on startup. This file is gitignored — edit it to point at any wireframes directory:
+
 ```
+WIREFRAMES_DIR=/path/to/your/project/wireframes
+PORT=3000
+```
+
+**Always read `.env` to find the active `WIREFRAMES_DIR` before creating or editing wireframe files.** Do not assume wireframes live in `./wireframes/`.
 
 ## Architecture
 

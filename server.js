@@ -3,9 +3,20 @@ const chokidar = require('chokidar');
 const fs = require('fs');
 const path = require('path');
 
+// Load .env if present
+const envFile = path.join(__dirname, '.env');
+if (fs.existsSync(envFile)) {
+  fs.readFileSync(envFile, 'utf8').split('\n').forEach(line => {
+    const [k, ...rest] = line.split('=');
+    if (k && rest.length && !process.env[k.trim()]) {
+      process.env[k.trim()] = rest.join('=').trim();
+    }
+  });
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const WIREFRAMES_DIR = process.env.WIREFRAMES_DIR || path.join(__dirname, 'wireframes');
+const WIREFRAMES_DIR = path.resolve(__dirname, process.env.WIREFRAMES_DIR || 'wireframes');
 
 // SSE clients
 const clients = new Set();
