@@ -50,7 +50,9 @@ Update the HTML file to reflect this feedback. Also update the .intent.json file
 - Add or modify element intents as needed
 - Append an entry to conversation_history with timestamp, feedback summary, and changes made
 
-Keep the HTML simple — no external dependencies, no complex styling.
+Keep it minimal — basic HTML, inline styles only, no external deps. This is a wireframe, not a
+finished UI. Use basic HTML elements, tables, simple forms. The goal is to validate information
+architecture and user flow, not visual design.
 ```
 
 To create a new wireframe:
@@ -64,13 +66,22 @@ Create both [WIREFRAME-ID].html and [WIREFRAME-ID].intent.json.
 The HTML should show: [LIST OF INFORMATION AND ACTIONS]
 
 For navigation to other wireframes, use href="#wireframe:target-id".
+
+Keep it minimal — basic HTML, inline styles only, no external deps. This is a wireframe for
+validating intent, not a finished design.
 ```
 
 To distill validated wireframes into a specification:
 ```
-Read all .intent.json files in ./wireframes/. From these and the corresponding HTML wireframes,
-distill a SPECIFICATION.md capturing: domain model, user workflows, business rules, data requirements.
-Technology-agnostic. Sufficient for an LLM to compile into any backend implementation.
+Read all .intent.json files in ./wireframes/ and the corresponding HTML wireframes.
+Distill a SPECIFICATION.md that captures:
+1. Domain model: entities, their attributes, and relationships (derived from what information appears on screens)
+2. User workflows: the flows between screens and what actions trigger transitions
+3. Business rules: any constraints or validation rules implied by the wireframe structure
+4. Data requirements: what data each screen needs to display and what data each action produces
+
+Technology-agnostic. Focus on WHAT the system does, not HOW. Sufficient for an LLM to compile
+into any backend implementation.
 ```
 
 ## Key Constraints
